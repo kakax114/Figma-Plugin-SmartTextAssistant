@@ -30,7 +30,8 @@ const App = ({}) => {
     const [groupByLayerName, setGroupByLayerName] = React.useState(false);
     const [insertOrder, setInsertOrder] = React.useState('random');
     const [userData, setUserData] = React.useState('');
-    const [selectedOption, setSelectedOption] = React.useState(options[0]);
+    const [selectedOption, setSelectedOption] = React.useState([{name: 'All', option: options[0]}]);
+    console.log(selectedOption);
 
     React.useEffect(() => {
         window.onmessage = (event) => {
@@ -53,6 +54,49 @@ const App = ({}) => {
         return uniqueLayerNames;
     };
 
+    React.useEffect(() => {
+        if (!groupByLayerName) {
+            setSelectedOption([{name: 'All', option: options[0]}]);
+        } else {
+            setSelectedOption(getUniqueLayerNames().map((e) => ({name: e, option: options[0]})));
+        }
+    }, [groupByLayerName]);
+
+    const getOptionList = (layerName) => {
+        return (
+            <div className="option-list">
+                {selectedOption.map((option) => (
+                    <div className="option-list-item" key={option.name}>
+                        {option.name === layerName ? (
+                            <select
+                                value={option.option}
+                                onChange={(e) => {
+                                    setSelectedOption(
+                                        selectedOption.map((a) => {
+                                            if (a.name === layerName) {
+                                                //return the target value of the select
+                                                return {...a, option: e.target.value};
+                                            }
+                                            return a;
+                                        })
+                                    );
+                                }}
+                            >
+                                {options.map((e) => (
+                                    <option key={e} value={e}>
+                                        {e}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            ''
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
     const genRandomFullNames = () => {
         return (
             firstNames[Math.floor(Math.random() * firstNames.length)] +
@@ -61,10 +105,36 @@ const App = ({}) => {
         );
     };
 
+    const genRandomAge = () => {
+        return Math.floor(Math.random() * 100).toString();
+    };
+
+    const genRandomFirstNames = () => {
+        return firstNames[Math.floor(Math.random() * firstNames.length)];
+    };
+
+    const genRandomLastNames = () => {
+        return lastNames[Math.floor(Math.random() * lastNames.length)];
+    };
+
     const updateText = (layer, e) => {
         layer.value = e.target.value;
         setLayers([...layers]);
         parent.postMessage({pluginMessage: {type: 'overwrite', result: layers}}, '*');
+    };
+
+    const randomize = (name) => {
+        //find the option of the name in selectedoptions
+        const option = selectedOption.find((e) => e.name === name).option;
+        if (option === 'Full name') {
+            return genRandomFullNames();
+        } else if (option === 'Age') {
+            return genRandomAge();
+        } else if (option === 'First name') {
+            return genRandomFirstNames();
+        } else if (option === 'Last name') {
+            return genRandomLastNames();
+        }
     };
 
     return (
@@ -162,7 +232,7 @@ const App = ({}) => {
                                               console.log(layer.id);
                                               return {
                                                   ...layer,
-                                                  value: genRandomFullNames(),
+                                                  value: randomize(layerName),
                                               };
                                           } else {
                                               return layer;
@@ -177,11 +247,11 @@ const App = ({}) => {
                               >
                                   Random
                               </button>
-                              <Dropdown
-                                  options={options}
-                                  selectedOption={selectedOption}
-                                  setSelectedOption={setSelectedOption}
-                              />
+
+                              {/* print selectedOption as select that update setselectedOption */}
+
+                              {getOptionList(layerName)}
+
                               <div key={layerName}>
                                   {layers
                                       .filter((layer) => layer.name === layerName)
@@ -215,18 +285,6 @@ const App = ({}) => {
                       );
                   })}
         </div>
-    );
-};
-
-const Dropdown = ({options, selectedOption, setSelectedOption}) => {
-    return (
-        <select onChange={(e) => setSelectedOption(e.target.value)} value={selectedOption}>
-            {options.map((option) => (
-                <option key={option} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
     );
 };
 
