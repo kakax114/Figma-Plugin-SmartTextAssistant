@@ -183,7 +183,7 @@ const App = ({}) => {
                             const updatedLayers = layers.map((layer) => {
                                 return {
                                     ...layer,
-                                    value: genRandomFullNames(),
+                                    value: randomize('All'),
                                 };
                             });
                             setLayers(updatedLayers);
@@ -192,6 +192,22 @@ const App = ({}) => {
                     >
                         Random
                     </button>
+                    <select
+                        value={selectedOption[0].option}
+                        onChange={(e) =>
+                            setSelectedOption(
+                                selectedOption.map((a) => {
+                                    return {...a, option: e.target.value};
+                                })
+                            )
+                        }
+                    >
+                        {options.map((e) => (
+                            <option key={e} value={e}>
+                                {e}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             )}
 
