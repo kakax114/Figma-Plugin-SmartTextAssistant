@@ -2,6 +2,8 @@ import * as React from 'react';
 import '../styles/ui.css';
 import firstNames from './FirstNames';
 import lastNames from './LastNames';
+import cities from './Cities';
+import addresses from './Addresses';
 
 declare function require(path: string): any;
 
@@ -20,17 +22,20 @@ const App = ({}) => {
         'Age',
         'Address',
         'Phone number',
+        'Balance',
         'Email',
-        'Password',
+        'Year',
+        'Credit card',
         'ID',
+        'Custom',
     ];
 
     //usestate for message
     const [layers, setLayers] = React.useState([]);
     const [groupByLayerName, setGroupByLayerName] = React.useState(false);
-    const [insertOrder, setInsertOrder] = React.useState('random');
-    const [userData, setUserData] = React.useState('');
     const [selectedOption, setSelectedOption] = React.useState([{name: 'All', option: options[0]}]);
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const [customData, setCustomData] = React.useState('');
     console.log(selectedOption);
 
     React.useEffect(() => {
@@ -80,6 +85,11 @@ const App = ({}) => {
                                             return a;
                                         })
                                     );
+                                    if (e.target.value === 'Custom') {
+                                        setModalOpen(true);
+                                    } else {
+                                        setModalOpen(false);
+                                    }
                                 }}
                             >
                                 {options.map((e) => (
@@ -105,8 +115,8 @@ const App = ({}) => {
         );
     };
 
-    const genRandomAge = () => {
-        return Math.floor(Math.random() * 100).toString();
+    const genRandomAges = () => {
+        return (Math.floor(Math.random() * 55) + 15).toString();
     };
 
     const genRandomFirstNames = () => {
@@ -117,10 +127,83 @@ const App = ({}) => {
         return lastNames[Math.floor(Math.random() * lastNames.length)];
     };
 
+    const genRandomYears = () => {
+        return (Math.floor(Math.random() * (2029 - 1900 + 1)) + 1900).toString();
+    };
+
+    const genRandomBalances = () => {
+        return (
+            Math.floor(Math.random() * 9000)
+                .toFixed(0)
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                .toString() +
+            '.' +
+            Math.floor(Math.random() * 100).toFixed(0)
+        );
+    };
+
+    const genRandomEmails = () => {
+        return (
+            firstNames[Math.floor(Math.random() * firstNames.length)] +
+            '.' +
+            lastNames[Math.floor(Math.random() * lastNames.length)].charAt(0) +
+            '@' +
+            'email.com'
+        );
+    };
+
+    const genRandomCreditCards = () => {
+        return (
+            Math.floor(Math.random() * 9999) +
+            ' ' +
+            Math.floor(Math.random() * 9999) +
+            ' ' +
+            Math.floor(Math.random() * 9999) +
+            ' ' +
+            Math.floor(Math.random() * 9999)
+        );
+    };
+
+    const genRandomAddresses = () => {
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+        return (
+            Math.floor(Math.random() * 100) +
+            //random letter from alphabet, or nothing
+            (Math.floor(Math.random() * 2) ? alphabet[Math.floor(Math.random() * alphabet.length)] : '') +
+            ' ' +
+            addresses[Math.floor(Math.random() * addresses.length)]
+        );
+    };
+
+    const genRandomID = () => {
+        //1 letter + 5 digits number
+        return (
+            firstNames[Math.floor(Math.random() * firstNames.length)].charAt(0) +
+            Math.floor(Math.random() * 100000).toString()
+        );
+    };
+
+    const genRandomCities = () => {
+        return cities[Math.floor(Math.random() * cities.length)].city;
+    };
+
+    const genRandomPhoneNumbers = () => {
+        return '1 ' + Math.floor(Math.random() * 100000000).toString();
+    };
+
     const updateText = (layer, e) => {
         layer.value = e.target.value;
         setLayers([...layers]);
         parent.postMessage({pluginMessage: {type: 'overwrite', result: layers}}, '*');
+    };
+
+    const randomeCustomData = () => {
+        //break up the string into an array of words by new line
+        const words = customData.split('\n');
+        //randomly select a word from the array
+        const randomWord = words[Math.floor(Math.random() * words.length)];
+        //return the random word
+        return randomWord;
     };
 
     const randomize = (name) => {
@@ -129,17 +212,75 @@ const App = ({}) => {
         if (option === 'Full name') {
             return genRandomFullNames();
         } else if (option === 'Age') {
-            return genRandomAge();
+            return genRandomAges();
         } else if (option === 'First name') {
             return genRandomFirstNames();
         } else if (option === 'Last name') {
             return genRandomLastNames();
+        } else if (option === 'City') {
+            return genRandomCities();
+        } else if (option === 'Email') {
+            return genRandomEmails();
+        } else if (option === 'ID') {
+            return genRandomID();
+        } else if (option === 'Address') {
+            return genRandomAddresses();
+        } else if (option === 'Phone number') {
+            return genRandomPhoneNumbers();
+        } else if (option === 'Credit card') {
+            return genRandomCreditCards();
+        } else if (option === 'Year') {
+            return genRandomYears();
+        } else if (option === 'Balance') {
+            return genRandomBalances();
+        } else if (option === 'Custom') {
+            return randomeCustomData();
         }
     };
 
     return (
         <div>
+            {/* modal div with textarea that updates the customerdata state, a save button to setmodalopen to false */}
+
             <h2>Hello world</h2>
+
+            {modalOpen ? (
+                <div className="modal">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h2>Customize your data</h2>
+                        </div>
+                        <div className="modal-body">
+                            <textarea
+                                value={customData}
+                                onChange={(e) => {
+                                    setCustomData(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <div className="modal-footer">
+                            <button
+                                onClick={() => {
+                                    setModalOpen(false);
+                                    setCustomData('');
+                                }}
+                            >
+                                Clear
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setModalOpen(false);
+                                }}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <>Nothing</>
+            )}
+
             <button
                 onClick={() => {
                     parent.postMessage({pluginMessage: {type: 'run'}}, '*');
@@ -157,7 +298,7 @@ const App = ({}) => {
                 Group by layer name
             </label>
 
-            {/* show button and input only when groupByLayerName is false */}
+            {/* show button and input in none-grouped list */}
             {!groupByLayerName && (
                 <div>
                     <p>overwrite all selected texts</p>
@@ -194,13 +335,19 @@ const App = ({}) => {
                     </button>
                     <select
                         value={selectedOption[0].option}
-                        onChange={(e) =>
+                        onChange={(e) => {
                             setSelectedOption(
                                 selectedOption.map((a) => {
                                     return {...a, option: e.target.value};
                                 })
-                            )
-                        }
+                            );
+                            //if the option is custom, open the modal
+                            if (e.target.value === 'Custom') {
+                                setModalOpen(true);
+                            } else {
+                                setModalOpen(false);
+                            }
+                        }}
                     >
                         {options.map((e) => (
                             <option key={e} value={e}>
