@@ -2,8 +2,8 @@
 :root {
     --primary-blue: rgb(29, 94, 255);
     --accent-grey: rgb(196, 195, 198);
-    /* --background-color: rgb(35, 36, 42); */
-    --background-color: rgb(44, 43, 44);
+    --background-color: rgb(35, 36, 42);
+    /* --background-color: rgb(44, 43, 44); */
     --text-bright: rgb(255, 255, 255);
     --mute-grey: rgb(102, 108, 115);
     --mid-grey: rgb(50, 55, 65);
@@ -68,7 +68,7 @@ body {
 }
 
 .label-inactive {
-    color: var(--mute-grey);
+    color: var(--accent-grey);
 }
 
 .wraper {
@@ -108,20 +108,20 @@ body {
     cursor: pointer;
 }
 
+/* button on click css */
 .refresh {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    /* width: 100%; */
-    /* padding: 6px 6px; */
+    background-image: linear-gradient(to right, #f05a28, #ec008c, #f05a28);
+    background-size: 300% 100%;
+    transition: all 0.5s ease-in-out;
+    opacity: 1;
+    /* padding: 16px 32px; */
     padding: 7px 10px;
-    background-color: var(--mid-grey);
-    border-radius: var(--radius);
-    /* border color to mute grey */
-    border: 1px solid var(--mute-grey);
-    /* cursor is pointer */
     cursor: pointer;
+    border-radius: var(--sm-radius);
+}
+
+.refresh:hover {
+    background-position: 500% 100%;
 }
 
 .divider {
@@ -130,10 +130,12 @@ body {
 
 input {
     /* font: var(--font) */
-    color: var(--accent-grey);
+    /* color: var(--accent-grey); */
     width: 100%;
     border-radius: var(--sm-radius);
     background-color: var(--mid-grey);
+    /* background-color rgb(59 64 72) */
+    background-color: rgb(59 64 72);
     color: var(--text-bright);
     font-size: 12px;
     padding: 5px 5px;
@@ -144,7 +146,7 @@ input {
 }
 
 input::placeholder {
-    color: var(--mute-grey);
+    color: var(--accent-grey);
     font: var(--font);
 }
 
@@ -219,7 +221,7 @@ textarea {
 }
 
 textarea::placeholder {
-    color: var(--mute-grey);
+    color: var(--accent-grey);
     font: var(--font);
 }
 
@@ -250,4 +252,37 @@ textarea:focus {
 .empty-state > p {
     /* line space */
     line-height: 1.5;
+}
+
+/* .random-icon rorate 360 ease on hover */
+.random-icon:hover {
+    transform: rotate(360deg);
+    /* color change to red */
+    transition: all 0.4s ease-in-out;
+}
+
+.random-div {
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.4s ease-in-out;
+}
+
+.random-div:hover {
+    padding: 5px;
+    background-color: black;
+    border-radius: 4px;
+    transition: all 0.4s ease-in-out;
+}
+
+.select-div {
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.4s ease-in-out;
+}
+
+.select-div:hover {
+    padding: 5px;
+    background-color: black;
+    border-radius: 4px;
+    transition: all 0.4s ease-in-out;
 }

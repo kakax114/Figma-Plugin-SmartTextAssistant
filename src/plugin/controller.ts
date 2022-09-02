@@ -25,17 +25,22 @@ const getSelections = () => {
 
 //recursion function look for text layers in the selection and selection children
 const lookingForText = (element) => {
-    console.log(element);
-    //if element is array, then loop through element
+    // console.log(element);
+
+    //if element is not visible or locked then skip
+    if (element.visible === false) {
+        return;
+    }
+
     if (Array.isArray(element)) {
-        console.log(1);
+        // console.log(1);
         element.forEach((element) => {
             lookingForText(element);
         });
     } else {
         //if element is a text layer, then return the text
         if (element.type === 'TEXT') {
-            console.log(2);
+            // console.log(2);
             textLayers.push({
                 id: element.id,
                 name: element.name,
@@ -43,11 +48,11 @@ const lookingForText = (element) => {
             });
             allLayers.push(element);
         } else if (element.children !== undefined && element.children.length > 0) {
-            console.log(3);
+            // console.log(3);
             lookingForText(element.children);
         } else if (element.children === undefined) {
-            console.log(4);
-            allLayers.push(element);
+            // console.log(4);
+            // allLayers.push(element);
         }
     }
 };
@@ -65,7 +70,8 @@ figma.ui.onmessage = (msg) => {
             // const node = figma.currentPage.findOne(node => node.id === element.id)
             //element id = all layers id
             const node = allLayers.find((node) => node.id === element.id);
-            console.log('overwriting...');
+            console.log(node);
+            // console.log('overwriting...');
             figma.loadFontAsync({family: node.fontName.family, style: node.fontName.style}).then(() => {
                 node.characters = element.value;
             });

@@ -1,6 +1,6 @@
 {
-  "name": "Bulk select & replace",
-  "id": "00000000",
+  "name": "Smart text assistant",
+  "id": "1147396612884363588",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",

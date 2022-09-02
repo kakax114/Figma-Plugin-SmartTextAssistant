@@ -28,7 +28,7 @@ const EmptyState = (props) => {
 
             <p className="label">Select any layer with texts you want to change in the page and refresh </p>
 
-            <div className="button" onClick={props.onClick}>
+            <div className="refresh" onClick={props.onClick}>
                 Refresh
             </div>
         </div>
